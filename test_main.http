@@ -1,0 +1,29 @@
+# Test your FastAPI endpoints
+
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/hello/User
+Accept: application/json
+
+###
+
+GET localhost:8000/api/v1/timecode/Z4CyURj01oo?key_words=гипотеза римана
+Accept: application/json
+
+###
+
+GET localhost:8000/api/v1/timecode/6xnzxuV_AVA?key_words=алгоритмическая разрешимость и доказуемость&key_words=теория доказательств&key_words=теория алгоритмов&key_words=теория сложности
+Accept: application/json
+
+###
+
+GET localhost:8000/api/v1/timecode/XSvQ4gQigk4?key_words=год И.Н. Лобачевского&key_words=геометрия Евклида&key_words=геометрия Лобачевского&key_words=основание геометрии&key_words=непротиворечивость геометрии Лобачевского
+Accept: application/json
+
+###
+
+GET localhost:8000/api/v1/timecode/kcTsIZnjhag?key_words=кубические уравнения&key_words=неприводимый случай кубических уравнений&key_words=Теорема Молламе&key_words=теорема Гельдера&key_words=уравнения четвертой степени&key_words=метод Феррари&key_words=Рафаэль Бомбелли&key_words=работы Бомбелли&key_words=комплексные числа&key_words=основная теорема алгебры&key_words=Фаньяно деи Тоски Джулио Карл&key_words=работы Фаньяно&key_words=Леонард Эйлер&key_words=работы Эйлера&key_words=Жозеф Луи Лагранж&key_words=работы Лагранжа&key_words=Пауло Руффини&key_words=работы Руффини&key_words=Нальс Хенрик Абель&key_words=работы Абеля&key_words=Эварист Галуа&key_words=работы Галуа
+Accept: application/json
