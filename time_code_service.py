@@ -29,7 +29,6 @@ def get_time_codes(video_id):
     time_coded_words = list()
     total = 0
     elapsed = 0
-    unique_words = list()
     regex = re.compile('[а-яА-Я]')
 
     for entry in entries:
