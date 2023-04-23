@@ -47,7 +47,7 @@ def get_time_codes(video_id):
 
     print('average time for lemmatization:', elapsed / total)
     print('total words:', total)
-    print('total time:', elapsed)
+    print('total time for lemmatization:', elapsed)
     return time_coded_words
 
 
@@ -87,6 +87,6 @@ def align_time_codes(time_codes: list, key_words: list):
                 ans = list()
                 count = 0
     end = time.time()
-    print('average time for align:', end - st)
+    print('total time for align:', end - st)
 
     return result

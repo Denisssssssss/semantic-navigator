@@ -1,157 +1,228 @@
 <!DOCTYPE html>
 <!-- saved from url=(0047)https://lobachevskii-dml.ru/video/lobyear2017/6 -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="icon" href="https://lobachevskii-dml.ru/assets/images/favicon.ico">
+<html>
+<script>
+    const getKeywords = () => {
+        const keywordsTitle = Array.from(document.querySelectorAll('b')).find((block) => block.innerText.includes('Ключевые слова'));
+        const keywordsBlock = keywordsTitle.nextSibling;
+        const keywords = keywordsBlock.data.trim();
+        const keywordsArray = keywords.split(',').map(keyword => keyword.trim());
+        return keywordsArray;
+    };
 
-<title>Разрешимое и неразрешимое, доказуемое и недоказуемое в математике – Цифровая математическая библиотека Лобачевского</title>
+    function getTimeCodes() {
+        let xmlHttp = new XMLHttpRequest();
+        let videoId = 'kcTsIZnjhag';
+        let params = getKeywords();
+        let req_params = params.join(',')
+        xmlHttp.open("GET", 'http://localhost:8000/api/v1/timecode/' + videoId + '?key_words=' + req_params, false); // false for synchronous request
+        xmlHttp.send(null);
+        return xmlHttp.response;
+    }
 
-<link rel="icon" href="https://lobachevskii-dml.ru/video/lobyear2017/images/favicon.ico">
+    function prettyTimeCodes() {
+        let map = getTimeCodes()
+        alert(map.get('Кубические уравнения'))
+    }
+</script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://lobachevskii-dml.ru/assets/images/favicon.ico">
 
-<!-- Bootstrap core CSS -->
-<link href="./test_files/bootstrap.min.css" rel="stylesheet">
-<link href="./test_files/flag-icon.min.css" rel="stylesheet">
-<link href="./test_files/bootstrap-select.min.css" rel="stylesheet">
+    <title>Разрешимое и неразрешимое, доказуемое и недоказуемое в математике – Цифровая математическая библиотека
+        Лобачевского</title>
 
-<!-- Custom styles for this template -->
-<!-- <link href="style/css/offcanvas.css" rel="stylesheet"> -->
-<!-- Custom styles for this template -->
-<link href="./test_files/sticky-footer-navbar.css" rel="stylesheet">
-<link href="./test_files/style.css" rel="stylesheet">
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<link href="./test_files/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link rel="icon" href="https://lobachevskii-dml.ru/video/lobyear2017/images/favicon.ico">
 
-<!--[endif]
-    [if lt IE 8]-->
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="./test_files/bootstrap.min.css" rel="stylesheet">
+    <link href="./test_files/flag-icon.min.css" rel="stylesheet">
+    <link href="./test_files/bootstrap-select.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="style/css/offcanvas.css" rel="stylesheet"> -->
+    <!-- Custom styles for this template -->
+    <link href="./test_files/sticky-footer-navbar.css" rel="stylesheet">
+    <link href="./test_files/style.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./test_files/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!--[endif]
+        [if lt IE 8]-->
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <!--[endif]---->
 
-<!-- Fixed navbar -->
-</head><body><nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span> 
-      </button>
-      <a class="navbar-brand" href="https://lobachevskii-dml.ru/">Lobachevskii Digital Mathematics Library</a>
+    <!-- Fixed navbar -->
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://lobachevskii-dml.ru/">Lobachevskii Digital Mathematics Library</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                    <a href="https://lobachevskii-dml.ru/">Главная</a></li>
+                <li class="">
+                    <a href="https://lobachevskii-dml.ru/collections">Архив коллекций</a></li>
+                <li class="">
+                    <a href="https://lobachevskii-dml.ru/about">О проекте</a></li>
+                <li class="">
+                    <a href="https://lobachevskii-dml.ru/mathcenter">Математические центры</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-                        <li class="">
-                <a href="https://lobachevskii-dml.ru/">Главная</a></li>
-                        <li class="">
-                <a href="https://lobachevskii-dml.ru/collections">Архив коллекций</a></li>
-                        <li class="">
-                <a href="https://lobachevskii-dml.ru/about">О проекте</a></li>
-                        <li class="">
-                <a href="https://lobachevskii-dml.ru/mathcenter">Математические центры</a></li>
-                  </ul>
-    </div><!--/.nav-collapse -->
-  </div>
 </nav>
 
-    <div class="container">
-        <div class="row row-offcanvas row-offcanvas-right">
-            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                <ol class="breadcrumb"><li><a href="https://lobachevskii-dml.ru/">Главная</a></li><li><a href="https://lobachevskii-dml.ru/collections">Архив коллекций</a></li><li><a href="https://lobachevskii-dml.ru/collections/video">Видеоматериалы</a></li><li class="active">Разрешимое и неразрешимое, доказуемое и недоказуемое в математике</li></ol>
-<div>
-    <div class="page-header">
-        <h2>Алгебраические уравнения, разрешимые в радикалах</h2>
-    </div>
-	<div class="list-group">
-		<p><b>Лектор:</b> <a href="http://kpfu.ru/Adel.Abyzov">Абызов Адель Наилевич</a>.</p>
-		<p><b>Ключевые слова:</b> Кубические уравнения, неприводимый случай кубических уравнений, Теорема Молламе, теорема Гельдера, уравнения четвертой степени, метод Феррари, Рафаэль Бомбелли, работы Бомбелли, комплексные числа, основная теорема алгебры, Фаньяно деи Тоски Джулио Карл, работы Фаньяно, Леонард Эйлер,  работы Эйлера, Жозеф Луи Лагранж , работы Лагранжа, Пауло Руффини, работы Руффини, Нальс Хенрик Абель, работы Абеля, Эварист Галуа, работы Галуа.</p>
-		<p><b>Аннотация:</b> Лекция Аделя Абызова - доцента кафедры алгебры и математической логики Института математики и механики им. Н.И. Лобачевского Казанского федерального университета. В данной лекции речь идет об известных математиках, таких как Феррари, Р. Бомбелли, Фаньяно, Эйлер, Лагранж, Руффини, Абель, Галуа, и их работах. Лектор рассказывает о кубических уравнениях, приводит неприводимый случай кубических уравнений, формулирует теоремы Молламе и Гельдера.</p>
-		<p><b>Дата:</b> 2017-06-09</p>
-		<p><b>Длительность:</b> 49:20</p>
-		<iframe width="560" height="315" src="./test_files/kcTsIZnjhag.html" frameborder="0" allowfullscreen=""></iframe>
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+            <ol class="breadcrumb">
+                <li><a href="https://lobachevskii-dml.ru/">Главная</a></li>
+                <li><a href="https://lobachevskii-dml.ru/collections">Архив коллекций</a></li>
+                <li><a href="https://lobachevskii-dml.ru/collections/video">Видеоматериалы</a></li>
+                <li class="active">Разрешимое и неразрешимое, доказуемое и недоказуемое в математике</li>
+            </ol>
+            <div>
+                <div class="page-header">
+                    <h2>Алгебраические уравнения, разрешимые в радикалах</h2>
+                </div>
+                <div class="list-group">
+                    <p><b>Лектор:</b> <a href="http://kpfu.ru/Adel.Abyzov">Абызов Адель Наилевич</a>.</p>
+                    <p><b>Ключевые слова:</b> Кубические уравнения, неприводимый случай кубических уравнений, Теорема
+                        Молламе, теорема Гельдера, уравнения четвертой степени, метод Феррари, Рафаэль Бомбелли, работы
+                        Бомбелли, комплексные числа, основная теорема алгебры, Фаньяно деи Тоски Джулио Карл, работы
+                        Фаньяно, Леонард Эйлер, работы Эйлера, Жозеф Луи Лагранж , работы Лагранжа, Пауло Руффини,
+                        работы Руффини, Нальс Хенрик Абель, работы Абеля, Эварист Галуа, работы Галуа.</p>
+                    <p><b>Аннотация:</b> Лекция Аделя Абызова - доцента кафедры алгебры и математической логики
+                        Института математики и механики им. Н.И. Лобачевского Казанского федерального университета. В
+                        данной лекции речь идет об известных математиках, таких как Феррари, Р. Бомбелли, Фаньяно,
+                        Эйлер, Лагранж, Руффини, Абель, Галуа, и их работах. Лектор рассказывает о кубических
+                        уравнениях, приводит неприводимый случай кубических уравнений, формулирует теоремы Молламе и
+                        Гельдера.</p>
+                    <p><b>Тайм коды:</b></p>
+                    <p><b>Дата:</b> 2017-06-09</p>
+                    <p><b>Длительность:</b> 49:20</p>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/kcTsIZnjhag" frameborder="0"
+                            allowfullscreen=""></iframe>
 
-	</div>
-</div>            
-            </div>
-            <div id="sidebar-container" class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <div class="sidebar-offcanvas" id="sidebar">
-                    <div class="list-group">
-                        <a href="https://medium.com/lobachevskii-dml" class="list-group-item">Medium Blog</a>
-                        <a href="https://lobachevskii-dml.ru/mathsearch" class="list-group-item">Math Search</a>
-                        <a href="https://lobachevskii-dml.ru/search" class="list-group-item">Full Text Search</a>
-                    </div>
-                </div><!--/.sidebar-offcanvas-->
-                	<div class="row" id="search-line-container">
-                  <!--?= form_open('search/query', ['class' => "form-search"])?-->
-                  <form action="https://lobachevskii-dml.ru/search" class="form-search" method="get" accept-charset="utf-8">
-            <div class="col-md-12">
-              <div class="input-group">
-                  <input name="q" type="text" class="form-control" placeholder="Поиск везде">
-                <div class="input-group-btn">
-                    <div class="btn-group" role="group">
-<!--                        <div class="dropdown dropdown-lg">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
-                            <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                <form class="form-horizontal" role="form">
-                                  <div class="form-group">
-                                    <label for="filter">Filter by</label>
-                                    <select class="form-control">
-                                        <option value="0" selected>All Snippets</option>
-                                        <option value="1">Featured</option>
-                                        <option value="2">Most popular</option>
-                                        <option value="3">Top rated</option>
-                                        <option value="4">Most commented</option>
-                                    </select>
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="contain">Author</label>
-                                    <input class="form-control" type="text" />
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="contain">Contains the words</label>
-                                    <input class="form-control" type="text" />
-                                  </div>
-                                  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                                </form>
-                            </div>
-                        </div>-->
-                        <button class="btn btn-default" type="submit">Найти</button>
-                    </div>
                 </div>
             </div>
-          </div>
-        </form>
-        <!--?= form_close() ?-->
-        </div>                <div class="sidebar-offcanvas">
-                    <select class="selectpicker" data-width="fit" name="lang" onchange="location = this.options[this.selectedIndex].value;" style="display: none;">
-                        <option data-content="&lt;span class=&quot;flag-icon flag-icon-ru&quot;&gt;&lt;/span&gt; Русский" value="//lobachevskii-dml.ru/ru/video/lobyear2017/6">Русский</option>
-                        <option data-content="&lt;span class=&quot;flag-icon flag-icon-us&quot;&gt;&lt;/span&gt; English" value="//lobachevskii-dml.ru/en/video/lobyear2017/6">English</option>
-                    </select><div class="btn-group bootstrap-select fit-width"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" title="Русский"><span class="filter-option pull-left"><span class="flag-icon flag-icon-ru"></span> Русский</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner selectpicker" role="menu"><li rel="0" class="selected"><a tabindex="0" class="" style=""><span class="flag-icon flag-icon-ru"></span> Русский<i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="1"><a tabindex="0" class="" style=""><span class="flag-icon flag-icon-us"></span> English<i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li></ul></div></div>
-                </div>
-            </div><!--/.col-xs-6.col-sm-4.col-md-2.col-lg-3-->
-          </div><!--/row-->
-        <hr>
-    </div> <!-- /container -->
-
-      <!-- Site footer -->
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted">© 2017–2023  Цифровая математическая библиотека Лобачевского</p>
         </div>
-    </footer>
-    
+        <div id="sidebar-container" class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+            <div class="sidebar-offcanvas" id="sidebar">
+                <div class="list-group">
+                    <a href="https://medium.com/lobachevskii-dml" class="list-group-item">Medium Blog</a>
+                    <a href="https://lobachevskii-dml.ru/mathsearch" class="list-group-item">Math Search</a>
+                    <a href="https://lobachevskii-dml.ru/search" class="list-group-item">Full Text Search</a>
+                </div>
+            </div><!--/.sidebar-offcanvas-->
+            <div class="row" id="search-line-container">
+                <!--?= form_open('search/query', ['class' => "form-search"])?-->
+                <form action="https://lobachevskii-dml.ru/search" class="form-search" method="get"
+                      accept-charset="utf-8">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input name="q" type="text" class="form-control" placeholder="Поиск везде">
+                            <div class="input-group-btn">
+                                <div class="btn-group" role="group">
+                                    <!--                        <div class="dropdown dropdown-lg">
+                                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                                                                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                                                    <form class="form-horizontal" role="form">
+                                                                      <div class="form-group">
+                                                                        <label for="filter">Filter by</label>
+                                                                        <select class="form-control">
+                                                                            <option value="0" selected>All Snippets</option>
+                                                                            <option value="1">Featured</option>
+                                                                            <option value="2">Most popular</option>
+                                                                            <option value="3">Top rated</option>
+                                                                            <option value="4">Most commented</option>
+                                                                        </select>
+                                                                      </div>
+                                                                      <div class="form-group">
+                                                                        <label for="contain">Author</label>
+                                                                        <input class="form-control" type="text" />
+                                                                      </div>
+                                                                      <div class="form-group">
+                                                                        <label for="contain">Contains the words</label>
+                                                                        <input class="form-control" type="text" />
+                                                                      </div>
+                                                                      <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>-->
+                                    <button class="btn btn-default" type="submit">Найти</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!--?= form_close() ?-->
+            </div>
+            <div class="sidebar-offcanvas">
+                <select class="selectpicker" data-width="fit" name="lang"
+                        onchange="location = this.options[this.selectedIndex].value;" style="display: none;">
+                    <option data-content="&lt;span class=&quot;flag-icon flag-icon-ru&quot;&gt;&lt;/span&gt; Русский"
+                            value="//lobachevskii-dml.ru/ru/video/lobyear2017/6">Русский
+                    </option>
+                    <option data-content="&lt;span class=&quot;flag-icon flag-icon-us&quot;&gt;&lt;/span&gt; English"
+                            value="//lobachevskii-dml.ru/en/video/lobyear2017/6">English
+                    </option>
+                </select>
+                <div class="btn-group bootstrap-select fit-width">
+                    <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown"
+                            title="Русский"><span class="filter-option pull-left"><span
+                            class="flag-icon flag-icon-ru"></span> Русский</span>&nbsp;<span class="caret"></span>
+                    </button>
+                    <div class="dropdown-menu open">
+                        <ul class="dropdown-menu inner selectpicker" role="menu">
+                            <li rel="0" class="selected"><a tabindex="0" class="" style=""><span
+                                    class="flag-icon flag-icon-ru"></span> Русский<i
+                                    class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+                            <li rel="1"><a tabindex="0" class="" style=""><span class="flag-icon flag-icon-us"></span>
+                                English<i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div><!--/.col-xs-6.col-sm-4.col-md-2.col-lg-3-->
+    </div><!--/row-->
+    <hr>
+</div> <!-- /container -->
+
+<!-- Site footer -->
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">© 2017–2023 Цифровая математическая библиотека Лобачевского</p>
+    </div>
+</footer>
+
 
 <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script>window.jQuery || document.write('<script src="//lobachevskii-dml.ru/assets/js/vendor/jquery.min.js"><\/script>')</script><script src="./test_files/jquery.min.js"></script>
-    <script src="./test_files/bootstrap.min.js"></script>
-    <script src="./test_files/bootstrap-select.min.js"></script>
-    <script src="./test_files/ldml.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="./test_files/ie10-viewport-bug-workaround.js"></script>
-    <script>
-    </script></body></html>
+<!-- Placed at the end of the document so the pages load faster -->
+<script>window.jQuery || document.write('<script src="//lobachevskii-dml.ru/assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="./test_files/jquery.min.js"></script>
+<script src="./test_files/bootstrap.min.js"></script>
+<script src="./test_files/bootstrap-select.min.js"></script>
+<script src="./test_files/ldml.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="./test_files/ie10-viewport-bug-workaround.js"></script>
+<script>
+</script>
+</body>
+</html>
