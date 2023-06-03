@@ -1,5 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from lemmagen3 import Lemmatizer
+from natasha import NamesExtractor, MorphVocab, Segmenter, Doc, NewsEmbedding, NewsNERTagger, PER
 
 import TimeCodedWord
 import time
@@ -8,16 +9,47 @@ import collections
 
 lemmatizer = Lemmatizer('ru')
 
+vocab = MorphVocab()
+ext = NamesExtractor(vocab)
+emb = NewsEmbedding()
+tagger = NewsNERTagger(emb)
+segm = Segmenter()
+
 
 def get_semantic_time_codes(video_id: str, key_words: list):
     st = time.time()
     time_codes = get_time_codes(video_id)
+    names = extract_names(time_codes)
+    for name in names:
+        if name not in key_words:
+            key_words.append(name)
+    for word in onto_math_pro():
+        if word not in key_words:
+            key_words.append(word)
     response = align_time_codes(time_codes, key_words)
     save_time_codes(video_id, response)
     end = time.time()
     print('finished in', end - st)
 
     return response
+
+
+def extract_names(time_coded_words):
+    full_text = ""
+    for word in time_coded_words:
+        full_text = full_text + " " + word.word
+    doc = Doc(full_text)
+    doc.segment(segm)
+    doc.tag_ner(tagger)
+    names = list()
+    for name in doc.spans:
+        names.append(name.text)
+    return names
+
+
+
+def onto_math_pro():
+    return list()
 
 
 def get_time_codes(video_id):
@@ -49,10 +81,6 @@ def get_time_codes(video_id):
     print('total words:', total)
     print('total time for lemmatization:', elapsed)
     return time_coded_words
-
-
-def onto_math_pro():
-    return list()
 
 
 def timecodes_exists(video_id):

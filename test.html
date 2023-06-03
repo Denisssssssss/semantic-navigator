@@ -2,8 +2,9 @@
 <!-- saved from url=(0047)https://lobachevskii-dml.ru/video/lobyear2017/6 -->
 <html>
 <script>
-    const getKeywords = () => {
-        const keywordsTitle = Array.from(document.querySelectorAll('b')).find((block) => block.innerText.includes('Ключевые слова'));
+    function getKeywords() {
+        const keywordsTitle = Array.from(document.querySelectorAll('b'))
+            .find((block) => block.innerText.includes('Ключевые слова'));
         const keywordsBlock = keywordsTitle.nextSibling;
         const keywords = keywordsBlock.data.trim();
         const keywordsArray = keywords.split(',').map(keyword => keyword.trim());
@@ -118,7 +119,6 @@
                     <p><b>Длительность:</b> 49:20</p>
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/kcTsIZnjhag" frameborder="0"
                             allowfullscreen=""></iframe>
-
                 </div>
             </div>
         </div>

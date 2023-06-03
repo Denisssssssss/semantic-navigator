@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Query
-from typing import List
+from fastapi import FastAPI
 
 from starlette.middleware.cors import CORSMiddleware
 
