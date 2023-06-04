@@ -34,7 +34,6 @@ def get_time_codes(video_id: str, key_words: list):
     print('finished in', end - st)
     print('\n')
 
-
     return response
 
 
