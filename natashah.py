@@ -1,7 +1,7 @@
 from natasha import NamesExtractor, MorphVocab, Doc, NewsEmbedding, NewsNERTagger, Segmenter
 
 
-text = 'россия'
+text = 'наташа это худшая нлп библиотека'
 vocab = MorphVocab()
 ext = NamesExtractor(vocab)
 doc = Doc(text)

@@ -19,4 +19,4 @@ app.add_middleware(
 
 @app.get("/api/v1/timecode/{video_id}")
 async def get_time_codes(video_id: str, key_words: str):
-    return time_code_service.get_semantic_time_codes(video_id, key_words.split(','))
+    return time_code_service.get_time_codes(video_id, key_words.split(','))
