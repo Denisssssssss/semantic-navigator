@@ -11,15 +11,17 @@
         return keywordsArray;
     };
 
+    var videoId;
+
     function getTimeCodes() {
         let xmlHttp = new XMLHttpRequest();
-        let videoId = getVideoId();
+        videoId = getVideoId();
         let url = "youtube.com/watch?v=" + videoId;
         let params = getKeywords();
         let req_params = params.join(',')
         xmlHttp.open("GET", 'http://localhost:8000/api/v1/timecode/' + videoId + '?key_words=' + req_params, false); // false for synchronous request
         xmlHttp.send(null);
-        let codes = xmlHttp.response;
+        let codes = JSON.parse(xmlHttp.responseText);
 
         document.getElementById('time_codes').innerHTML = printTimeCodes(params, codes, url);
     }
@@ -62,6 +64,22 @@
             html.concat("</p>")
         })
         return html;
+    }
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    var player;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            videoId: getVideoId(),
+        });
+    }
+
+    function setCurrentTime(time) {
+        player.seekTo(time);
     }
 </script>
 <head>
@@ -154,9 +172,34 @@
                         Гельдера.</p>
                     <p><b>Дата:</b> 2017-06-09</p>
                     <p><b>Длительность:</b> 49:20</p>
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/kcTsIZnjhag" frameborder="0"
-                            allowfullscreen=""></iframe>
+                    <div class="responsive-container">
+                        <div id="player">
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/kcTsIZnjhag"
+                                    frameborder="0"
+                                    allowfullscreen=""></iframe>
+                        </div>
+                    </div>
                     <p id="time_codes"><b>Тайм коды:</b></p>
+                    <ul>
+                        <li>Кубические уравнения:
+                            <a href="javascript:void(0);" onclick="setCurrentTime(0)">0:00</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(10)">0:10</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(20)">0:20</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(30)">0:30</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(40)">0:40</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(50)">0:50</a>
+                        </li>
+                        <li>Неприводимый случай кубических уравнений:
+                            <a href="javascript:void(0);" onclick="setCurrentTime(133)">2:13</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(143)">2:23</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(153)">2:33</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(163)">2:43</a>,
+                            <a href="javascript:void(0);" onclick="setCurrentTime(173)">2:53</a>
+                        </li>
+                        <li>Теорема Молламе:
+                            <a href="javascript:void(0);" onclick="setCurrentTime(193)">3:13</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
