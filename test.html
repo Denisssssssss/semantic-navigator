@@ -1,29 +1,67 @@
 <!DOCTYPE html>
 <!-- saved from url=(0047)https://lobachevskii-dml.ru/video/lobyear2017/6 -->
-<html>
+<html lang="ru">
 <script>
     function getKeywords() {
         const keywordsTitle = Array.from(document.querySelectorAll('b'))
             .find((block) => block.innerText.includes('Ключевые слова'));
         const keywordsBlock = keywordsTitle.nextSibling;
         const keywords = keywordsBlock.data.trim();
-        const keywordsArray = keywords.split(',').map(keyword => keyword.trim());
+        const keywordsArray = keywords.replaceAll(', ', '').split(',').map(keyword => keyword.trim());
         return keywordsArray;
     };
 
     function getTimeCodes() {
         let xmlHttp = new XMLHttpRequest();
-        let videoId = 'kcTsIZnjhag';
+        let videoId = getVideoId();
+        let url = "youtube.com/watch?v=" + videoId;
         let params = getKeywords();
         let req_params = params.join(',')
         xmlHttp.open("GET", 'http://localhost:8000/api/v1/timecode/' + videoId + '?key_words=' + req_params, false); // false for synchronous request
         xmlHttp.send(null);
-        return xmlHttp.response;
+        let codes = xmlHttp.response;
+
+        document.getElementById('time_codes').innerHTML = printTimeCodes(params, codes, url);
     }
 
-    function prettyTimeCodes() {
-        let map = getTimeCodes()
-        alert(map.get('Кубические уравнения'))
+    function getVideoId() {
+        return document.querySelector('iframe').src.split('/').pop();
+    }
+
+    function printTimeCodes(keyWords, timeCodes, url) {
+        html = ""
+        alert(timeCodes)
+        keyWords.forEach(word => {
+            codes = timeCodes.get(word);
+            seconds = [];
+            html.concat("<p>", word, ": ")
+            codes.forEach(code => {
+                entry = "".concat("<a href='", url, "&t=", code, "s'>");
+                s = code % 60;
+                m = (code / 60) % 60;
+                h = code / 3600
+                if (s.length < 2) {
+                    s = "0" + s;
+                }
+                if (m === 0 && h === 0) {
+                    entry.concat("00:", s, ", </a>");
+                    html.concat(entry)
+                    return;
+                }
+                if (m.length < 2 && h !== 0) {
+                    m = "0" + m;
+                }
+                if (h === 0) {
+                    entry.concat(m, ":", s, ", </a>");
+                    html.concat(entry);
+                    return;
+                }
+                entry.concat(h, ":", m, ":", s, ", </a>")
+                html.concat(entry)
+            })
+            html.concat("</p>")
+        })
+        return html;
     }
 </script>
 <head>
@@ -61,7 +99,7 @@
 
     <!-- Fixed navbar -->
 </head>
-<body>
+<body onload="getTimeCodes()">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -114,11 +152,11 @@
                         Эйлер, Лагранж, Руффини, Абель, Галуа, и их работах. Лектор рассказывает о кубических
                         уравнениях, приводит неприводимый случай кубических уравнений, формулирует теоремы Молламе и
                         Гельдера.</p>
-                    <p><b>Тайм коды:</b></p>
                     <p><b>Дата:</b> 2017-06-09</p>
                     <p><b>Длительность:</b> 49:20</p>
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/kcTsIZnjhag" frameborder="0"
                             allowfullscreen=""></iframe>
+                    <p id="time_codes"><b>Тайм коды:</b></p>
                 </div>
             </div>
         </div>
