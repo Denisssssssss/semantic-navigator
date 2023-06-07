@@ -209,7 +209,8 @@
             .find((block) => block.innerText.includes('Ключевые слова'));
         const keywordsBlock = keywordsTitle.nextSibling;
         const keywords = keywordsBlock.data.trim();
-        const keywordsArray = keywords.replaceAll(', ', '').split(',').map(keyword => keyword.trim());
+        debugger
+        const keywordsArray = keywords.replaceAll(', ', ',').split(',').map(keyword => keyword.trim());
         return keywordsArray;
     };
 
@@ -221,7 +222,7 @@
         let params = getKeywords();
         let req_params = params.join(',');
         const searchParams = new URLSearchParams();
-        const urlParams = params.forEach(keyWord => searchParams.append('key_words', keyWord));
+        searchParams.append("key_words", req_params);
         debugger
         const response = await fetch(
             `http://localhost:8000/api/v1/timecode/${videoId}?${searchParams}`
