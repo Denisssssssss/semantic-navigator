@@ -66,7 +66,7 @@ def extract_names(transcription_entries):
     doc = nlp(segments)
     for entity in doc.ents:
         if entity.label_ == 'PER' and lemmatizer.lemmatize(entity.text) not in names:
-            names.append(capitalize(lemmatizer.lemmatize(entity.text)))
+            names.append(capitalize(entity.lemma_))
     print(f'NER total: {len(names)}')
     return names
 
