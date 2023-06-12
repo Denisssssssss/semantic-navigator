@@ -26,8 +26,8 @@ def get_time_codes(video_id: str, key_words: list):
     lemmas = lemmatize(transcription)
     names = extract_names(transcription)
     terms = onto_math_pro()
-    total = merge_words(names, key_words, terms)
-    response = align_time_codes(lemmas, total)
+    # total = merge_words(names, key_words, terms)
+    response = align_time_codes(lemmas, key_words, names, terms)
     stats(response.keys(), names, key_words, terms)
     save_time_codes(video_id, response)
     end = time.time()
@@ -48,16 +48,30 @@ def merge_words(names, key_words, terms):
     return words
 
 
-# def extract_names(transcription_entries):
-#     names = list()
-#     segments = ' '.join(entry['text'] for entry in transcription_entries)
-#     doc = Doc(capitalize(segments))
-#     doc.segment(segm)
-#     doc.tag_ner(tagger)
-#     for name in doc.spans:
-#         if name.type == PER and len(name.text.split(" ")) == 1 and name.text not in names:
-#             names.append(name.text)
-#     return names
+# def merge_words(names, key_words, terms):
+#     words = list()
+#     for name in names:
+#         if len(words) == 0:
+#             words.append(name)
+#             continue
+#         for word in words:
+#             if name.lower() != word.lower():
+#                 words.append(name)
+#     for key_word in key_words:
+#         if len(words) == 0:
+#             words.append(key_word)
+#             continue
+#         for word in words:
+#             if key_word.lower() != word.lower():
+#                 words.append(key_word)
+#     for term in terms:
+#         if len(words) == 0:
+#             words.append(term)
+#             continue
+#         for word in words:
+#             if term.lower() != word.lower():
+#                 words.append(term)
+#     return words
 
 
 def extract_names(transcription_entries):
@@ -66,10 +80,21 @@ def extract_names(transcription_entries):
     doc = nlp(segments)
     for entity in doc.ents:
         if entity.label_ == 'PER' and lemmatizer.lemmatize(entity.text) not in names:
-            names.append(capitalize(entity.lemma_))
+            name = capitalize(entity.lemma_)
+            max = 0
+            for valid_name in valid_names():
+                k = string_jaccard(valid_name, name)
+                if k > 0.5 and k > max and valid_name not in names:
+                    names.append(valid_name)
+
     print(f'NER total: {len(names)}')
     return names
 
+
+def valid_names():
+    return ['Коши', 'Эйлер', 'Галилей', 'Кострикин', 'Гаусс', 'Лагранж', 'Риман',
+            'Гилберт', 'Абель', 'Лобачевский', 'Чебышев', 'Декарт', 'Ньютон', 'Диофант', 'Кеплер', 'Птолемей',
+            'Тарталья', 'Галуа', 'Бомбелли', 'Руффини', 'Кардан', 'Феррари']
 
 # def fix_ner(time_codes, names, lemmas):
 #     result = collections.defaultdict(list)
@@ -88,19 +113,16 @@ def capitalize(words):
 
 
 def onto_math_pro():
-    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-    queryString = """
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?label
-        WHERE { <http://dbpedia.org/resource/Asturias> rdfs:label ?label }
-    """
-    sparql.setQuery(queryString)
-    sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
+    terms = list()
+    with open('terms.txt') as file:
+        for line in file:
+            if len(line.rstrip().split()) < 3:
+                terms.append(line.rstrip().replace('\"', ''))
+    print(f'available terms: {len(terms)}')
+    return terms
 
-    # print(results, "\n")
-    return list()
 
+terms = onto_math_pro()
 
 def get_transcription(video_id):
     if timecodes_exists(video_id):
@@ -148,16 +170,48 @@ def save_time_codes(video_id, time_codes):
     print(f'saved for {video_id}')
 
 
-def align_time_codes(time_codes: list, key_words: list):
+def align_time_codes(time_codes: list, key_words: list, names: list, terms: list):
     st = time.time()
     result = collections.defaultdict(set)
 
+    for word in terms:
+        lemma = ' '.join([lemmatizer.lemmatize(token) for token in word.split()])
+        ans = list()
+        tc = list()
+        count = 0
+        for x in time_codes:
+            if hash(x.word.lower()) == hash(lemma.split(' ')[count].lower()) and string_jaccard(x.word.lower(), lemma.split(' ')[count].lower()) > .75:
+                count += 1
+                ans.append(word)
+                tc.append(x)
+                if len(ans) == len(lemma.split(' ')):
+                    result[word].add(tc[0].time)
+                    ans = list()
+                    count = 0
+            else:
+                ans = list()
+                count = 0
+    for word in names:
+        lemma = ' '.join([lemmatizer.lemmatize(token) for token in word.split()])
+        ans = list()
+        count = 0
+        for x in time_codes:
+            if hash(x.word.lower()) == hash(lemma.split(' ')[count].lower()) and x.word.lower() == lemma.split(' ')[count].lower():
+                count += 1
+                ans.append(x)
+                if len(ans) == len(lemma.split(' ')):
+                    result[word].add(ans[0].time)
+                    ans = list()
+                    count = 0
+            else:
+                ans = list()
+                count = 0
     for word in key_words:
         lemma = ' '.join([lemmatizer.lemmatize(token) for token in word.split()])
         ans = list()
         count = 0
         for x in time_codes:
-            if x.word.lower() == lemma.split(' ')[count].lower():
+            if hash(x.word.lower()) == hash(lemma.split(' ')[count].lower()) and x.word.lower() == lemma.split(' ')[count].lower():
                 count += 1
                 ans.append(x)
                 if len(ans) == len(lemma.split(' ')):
@@ -194,3 +248,13 @@ def stats(keys, names, key_words, terms):
     print(f'key words: {tkwords}')
     print(f'names: {tnames}')
     print(f'terms: {tterms}')
+
+
+def jaccard(list1, list2):
+    intersection = len(list(set(list1).intersection(list2)))
+    union = (len(list1) + len(list2)) - intersection
+    return float(intersection) / union
+
+
+def string_jaccard(str1, str2):
+    return jaccard(list(str1), list(str2))
