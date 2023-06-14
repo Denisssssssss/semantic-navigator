@@ -28,7 +28,7 @@ def get_time_codes(video_id: str, key_words: list):
     terms = onto_math_pro()
     # total = merge_words(names, key_words, terms)
     response = align_time_codes(lemmas, key_words, names, terms)
-    stats(response.keys(), names, key_words, terms)
+    # stats(response.keys(), names, key_words, terms)
     save_time_codes(video_id, response)
     end = time.time()
     print('finished in', end - st)
