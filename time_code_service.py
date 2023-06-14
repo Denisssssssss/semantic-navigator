@@ -7,6 +7,7 @@ from lemmagen3 import Lemmatizer
 from youtube_transcript_api import YouTubeTranscriptApi
 import psycopg2
 import TimeCodedWord
+import json
 
 
 lemmatizer = Lemmatizer('ru')
@@ -63,9 +64,11 @@ def extract_names(transcription_entries):
 
 
 def valid_names():
-    return ['Коши', 'Эйлер', 'Галилей', 'Кострикин', 'Гаусс', 'Лагранж', 'Риман',
-            'Гилберт', 'Абель', 'Лобачевский', 'Чебышев', 'Декарт', 'Ньютон', 'Диофант', 'Кеплер', 'Птолемей',
-            'Тарталья', 'Галуа', 'Бомбелли', 'Руффини', 'Кардан', 'Феррари']
+    cursor.execute('select value from r_names;')
+    names = list()
+    for row in cursor:
+        names.append(row[0])
+    return names
 
 
 def capitalize(words):
@@ -75,9 +78,9 @@ def capitalize(words):
 def onto_math_pro():
     start = time.time()
     terms = list()
-    with open('terms.txt') as file:
-        for line in file:
-            terms.append(line.rstrip().replace('\"', ''))
+    cursor.execute('select value from terms;')
+    for row in cursor:
+        terms.append(row[0])
     print(f'available terms: {len(terms)}')
     print(f'Terms got in {time.time() - start}')
     return terms
@@ -115,15 +118,19 @@ def lemmatize(text_segments):
     return time_coded_words
 
 
-def timecodes_exists(video_id):
-    return False
+def timecodes_exists(video_id: str):
+    cursor.execute('select exists(select * from responses where id = %s)', (video_id,))
+    return cursor.fetchone()[0]
 
 
 def find_processed_time_codes(video_id):
-    return list()
+    cursor.execute('select time_codes from responses where id = %s;', (video_id,))
+    return cursor.fetchone()[0]
 
 
 def save_time_codes(video_id, time_codes):
+    cursor.execute('insert into responses (id, time_codes) values (%(video_id)s, %(time_codes)s)', {'video_id': video_id, 'time_codes': json.dumps(time_codes)})
+    conn.commit()
     print(f'saved for {video_id}')
 
 
