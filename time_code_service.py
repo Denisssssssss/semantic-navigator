@@ -180,7 +180,8 @@ def align_time_codes(time_codes: list, key_words: list, names: list, terms: list
         tc = list()
         count = 0
         for x in time_codes:
-            if hash(x.word.lower()) == hash(lemma.split(' ')[count].lower()) and string_jaccard(x.word.lower(), lemma.split(' ')[count].lower()) > .75:
+            curr_lemma = lemma.split(' ')[count]
+            if rabin_carp_equals(x.word, curr_lemma) and string_jaccard(x.word.lower(), curr_lemma.lower()) > .75:
                 count += 1
                 ans.append(word)
                 tc.append(x)
@@ -196,7 +197,8 @@ def align_time_codes(time_codes: list, key_words: list, names: list, terms: list
         ans = list()
         count = 0
         for x in time_codes:
-            if hash(x.word.lower()) == hash(lemma.split(' ')[count].lower()) and x.word.lower() == lemma.split(' ')[count].lower():
+            curr_lemma = lemma.split(' ')[count]
+            if rabin_carp_equals(x.word, curr_lemma) and x.word.lower() == curr_lemma.lower():
                 count += 1
                 ans.append(x)
                 if len(ans) == len(lemma.split(' ')):
@@ -211,7 +213,8 @@ def align_time_codes(time_codes: list, key_words: list, names: list, terms: list
         ans = list()
         count = 0
         for x in time_codes:
-            if hash(x.word.lower()) == hash(lemma.split(' ')[count].lower()) and x.word.lower() == lemma.split(' ')[count].lower():
+            curr_lemma = lemma.split(' ')[count]
+            if rabin_carp_equals(x.word, curr_lemma) and x.word.lower() == curr_lemma.lower():
                 count += 1
                 ans.append(x)
                 if len(ans) == len(lemma.split(' ')):
@@ -258,3 +261,7 @@ def jaccard(list1, list2):
 
 def string_jaccard(str1, str2):
     return jaccard(list(str1), list(str2))
+
+
+def rabin_carp_equals(str1, str2):
+    return hash(str1.lower()) == hash(str2.lower())
