@@ -1,32 +1,29 @@
-from youtube_transcript_api import YouTubeTranscriptApi
-from lemmagen3 import Lemmatizer
-from natasha import NamesExtractor, MorphVocab, Segmenter, Doc, NewsEmbedding, NewsNERTagger, PER
-from SPARQLWrapper import SPARQLWrapper, JSON
-import spacy
-
-import TimeCodedWord
-import time
-import re
 import collections
+import re
+import time
+
+import spacy
+from lemmagen3 import Lemmatizer
+from youtube_transcript_api import YouTubeTranscriptApi
+import psycopg2
+import TimeCodedWord
+
 
 lemmatizer = Lemmatizer('ru')
-
-vocab = MorphVocab()
-ext = NamesExtractor(vocab)
-emb = NewsEmbedding()
-tagger = NewsNERTagger(emb)
-segm = Segmenter()
-
 nlp = spacy.load('ru_core_news_lg')
+conn = psycopg2.connect(dbname='sem-nav-db', user='postgres',
+                        password='123', host='localhost')
+cursor = conn.cursor()
 
 
 def get_time_codes(video_id: str, key_words: list):
     st = time.time()
+    if timecodes_exists(video_id):
+        return find_processed_time_codes(video_id)
     transcription = get_transcription(video_id)
     lemmas = lemmatize(transcription)
     names = extract_names(transcription)
     terms = onto_math_pro()
-    # total = merge_words(names, key_words, terms)
     response = align_time_codes(lemmas, key_words, names, terms)
     # stats(response.keys(), names, key_words, terms)
     save_time_codes(video_id, response)
@@ -46,32 +43,6 @@ def merge_words(names, key_words, terms):
     for term in terms:
         words.append(term)
     return words
-
-
-# def merge_words(names, key_words, terms):
-#     words = list()
-#     for name in names:
-#         if len(words) == 0:
-#             words.append(name)
-#             continue
-#         for word in words:
-#             if name.lower() != word.lower():
-#                 words.append(name)
-#     for key_word in key_words:
-#         if len(words) == 0:
-#             words.append(key_word)
-#             continue
-#         for word in words:
-#             if key_word.lower() != word.lower():
-#                 words.append(key_word)
-#     for term in terms:
-#         if len(words) == 0:
-#             words.append(term)
-#             continue
-#         for word in words:
-#             if term.lower() != word.lower():
-#                 words.append(term)
-#     return words
 
 
 def extract_names(transcription_entries):
@@ -96,36 +67,23 @@ def valid_names():
             'Гилберт', 'Абель', 'Лобачевский', 'Чебышев', 'Декарт', 'Ньютон', 'Диофант', 'Кеплер', 'Птолемей',
             'Тарталья', 'Галуа', 'Бомбелли', 'Руффини', 'Кардан', 'Феррари']
 
-# def fix_ner(time_codes, names, lemmas):
-#     result = collections.defaultdict(list)
-#     for name in names:
-#         if len(time_codes[name]) > 1:
-#             for x in time_codes[name]:
-#                 result[name].append(x)
-#     for lemma in lemmas:
-#         for x in time_codes[lemma]:
-#             result[lemma].append(x)
-#     return result
-
 
 def capitalize(words):
     return ' '.join(word.capitalize() for word in words.split(" "))
 
 
 def onto_math_pro():
+    start = time.time()
     terms = list()
     with open('terms.txt') as file:
         for line in file:
             terms.append(line.rstrip().replace('\"', ''))
     print(f'available terms: {len(terms)}')
+    print(f'Terms got in {time.time() - start}')
     return terms
 
 
-terms = onto_math_pro()
-
 def get_transcription(video_id):
-    if timecodes_exists(video_id):
-        return find_processed_time_codes(video_id)
     transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
     gen_transcript = transcript_list.find_generated_transcript(['ru', 'ru'])
     return gen_transcript.fetch()
