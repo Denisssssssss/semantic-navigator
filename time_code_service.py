@@ -116,8 +116,7 @@ def onto_math_pro():
     terms = list()
     with open('terms.txt') as file:
         for line in file:
-            if len(line.rstrip().split()) < 3:
-                terms.append(line.rstrip().replace('\"', ''))
+            terms.append(line.rstrip().replace('\"', ''))
     print(f'available terms: {len(terms)}')
     return terms
 
