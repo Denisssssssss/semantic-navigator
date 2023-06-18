@@ -1,10 +1,10 @@
-create table r_names
+CREATE TABLE r_names
 (
-    value varchar
+    value varchar(80)
 );
 
-insert into r_names (value)
-values ('Коши'),
+INSERT INTO r_names (value)
+VALUES ('Коши'),
        ('Эйлер'),
        ('Галилей'),
        ('Кострикин'),

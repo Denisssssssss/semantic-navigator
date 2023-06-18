@@ -2,19 +2,21 @@ import collections
 import re
 import time
 
+import json
 import spacy
+from mysql.connector import connect
 from lemmagen3 import Lemmatizer
 from youtube_transcript_api import YouTubeTranscriptApi
-import psycopg2
 import TimeCodedWord
 import json
 
 
 lemmatizer = Lemmatizer('ru')
 nlp = spacy.load('ru_core_news_lg')
-conn = psycopg2.connect(dbname='sem-nav-db', user='postgres',
-                        password='123', host='localhost')
-cursor = conn.cursor()
+# conn = psycopg2.connect(dbname='sem_nav_db', user='root', host='localhost')
+# cursor = conn.cursor()
+connection = connect(host='localhost', user='root', database='sem_nav_db')
+cursor = connection.cursor()
 
 
 def get_time_codes(video_id: str, key_words: list):
@@ -125,12 +127,13 @@ def timecodes_exists(video_id: str):
 
 def find_processed_time_codes(video_id):
     cursor.execute('select time_codes from responses where id = %s;', (video_id,))
-    return cursor.fetchone()[0]
+    time_codes = cursor.fetchone()[0]
+    return json.loads(time_codes)
 
 
 def save_time_codes(video_id, time_codes):
     cursor.execute('insert into responses (id, time_codes) values (%(video_id)s, %(time_codes)s)', {'video_id': video_id, 'time_codes': json.dumps(time_codes)})
-    conn.commit()
+    connection.commit()
     print(f'saved for {video_id}')
 
 

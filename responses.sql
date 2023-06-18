@@ -1,4 +1,4 @@
 create table responses (
-    id varchar primary key,
-    time_codes jsonb
+    id varchar(80) primary key,
+    time_codes json
 );

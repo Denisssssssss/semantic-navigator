@@ -1,6 +1,6 @@
 create table terms
 (
-    value varchar
+    value varchar(80)
 );
 
 insert into terms (value)
