@@ -141,8 +141,17 @@ def save_time_codes(video_id, time_codes):
 def align_time_codes(time_codes: list, key_words: list, names: list, terms: list):
     st = time.time()
     result = collections.defaultdict(set)
+    find(result, key_words, time_codes)
+    find(result, terms, time_codes)
+    find(result, names, time_codes)
+    end = time.time()
+    print('total time for align:', end - st)
 
-    for word in terms:
+    return sort_dict(result)
+
+
+def find(result, words, time_codes):
+    for word in words:
         lemma = ' '.join([lemmatizer.lemmatize(token) for token in word.split()])
         ans = list()
         tc = list()
@@ -157,45 +166,12 @@ def align_time_codes(time_codes: list, key_words: list, names: list, terms: list
                     result[word].add(tc[0].time)
                     ans = list()
                     count = 0
+                    tc = list()
             else:
                 ans = list()
+                tc = list()
                 count = 0
-    for word in names:
-        lemma = ' '.join([lemmatizer.lemmatize(token) for token in word.split()])
-        ans = list()
-        count = 0
-        for x in time_codes:
-            curr_lemma = lemma.split(' ')[count]
-            if rabin_carp_equals(x.word, curr_lemma) and x.word.lower() == curr_lemma.lower():
-                count += 1
-                ans.append(x)
-                if len(ans) == len(lemma.split(' ')):
-                    result[word].add(ans[0].time)
-                    ans = list()
-                    count = 0
-            else:
-                ans = list()
-                count = 0
-    for word in key_words:
-        lemma = ' '.join([lemmatizer.lemmatize(token) for token in word.split()])
-        ans = list()
-        count = 0
-        for x in time_codes:
-            curr_lemma = lemma.split(' ')[count]
-            if rabin_carp_equals(x.word, curr_lemma) and x.word.lower() == curr_lemma.lower():
-                count += 1
-                ans.append(x)
-                if len(ans) == len(lemma.split(' ')):
-                    result[word].add(ans[0].time)
-                    ans = list()
-                    count = 0
-            else:
-                ans = list()
-                count = 0
-    end = time.time()
-    print('total time for align:', end - st)
-
-    return sort_dict(result)
+    return result
 
 
 def sort_dict(result):
