@@ -52,13 +52,14 @@ def extract_names(transcription_entries):
     names = list()
     segments = ' '.join(entry['text'] for entry in transcription_entries)
     doc = nlp(segments)
+    ners = valid_names()
     for entity in doc.ents:
         if entity.label_ == 'PER' and lemmatizer.lemmatize(entity.text) not in names:
             name = capitalize(entity.lemma_)
             max = 0
-            for valid_name in valid_names():
+            for valid_name in ners:
                 k = string_jaccard(valid_name, name)
-                if k > 0.5 and k > max and valid_name not in names:
+                if k > 0.75 and k > max and valid_name not in names:
                     names.append(valid_name)
 
     print(f'NER total: {len(names)}')
@@ -222,7 +223,7 @@ def stats(keys, names, key_words, terms):
 
 def jaccard(list1, list2):
     intersection = len(list(set(list1).intersection(list2)))
-    union = (len(list1) + len(list2)) - intersection
+    union = (len(set(list1)) + len(set(list2))) - intersection
     return float(intersection) / union
 
 
