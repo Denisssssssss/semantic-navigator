@@ -1,0 +1,84 @@
+<script>
+    function getKeywords() {
+        const keywordsTitle = Array.from(document.querySelectorAll('b'))
+            .find((block) => block.innerText.includes('Ключевые слова'));
+        const keywordsBlock = keywordsTitle.nextSibling;
+        const keywords = keywordsBlock.data.trim();
+        debugger
+        const keywordsArray = keywords.replaceAll(', ', ',').split(',').map(keyword => keyword.trim());
+        return keywordsArray;
+    };
+
+    var videoId;
+
+    async function getTimeCodes() {
+        videoId = getVideoId();
+        let url = "youtube.com/watch?v=" + videoId;
+        let params = getKeywords();
+        let req_params = params.join(',');
+        const searchParams = new URLSearchParams();
+        searchParams.append("key_words", req_params);
+        debugger
+        const response = await fetch(
+            `http://localhost:8000/api/v1/timecode/${videoId}?${searchParams}`
+        );
+        const codes = await response.json();
+
+        printTimeCodes(Object.keys(codes), codes, url);
+    }
+
+    function getVideoId() {
+        return document.querySelector('iframe').src.split('/').pop();
+    }
+
+    function time(seconds) {
+        var date = new Date(0);
+        date.setSeconds(seconds); // specify value for SECONDS here
+        var timeString = date.toISOString().split('T')[1].split('.')[0];
+        if (seconds < 3600) {
+            timeString = timeString.substring(3);
+        }
+        return timeString;
+    }
+
+    function printTimeCodes(keyWords, timeCodes, url) {
+        const html = document.getElementById('time_codes')
+        keyWords.forEach(word => {
+            const li = document.createElement('li');
+            const wordText = document.createTextNode(word + ': ');
+            li.append(wordText);
+            codes = timeCodes[word];
+            codes.forEach((code, i) => {
+                const a = document.createElement('a');
+                a.setAttribute('href', 'javascript:void(0)');
+                a.addEventListener('click', () => setCurrentTime(code));
+                const t = time(code);
+                a.append(t);
+                li.append(a);
+                if (i !== timeCodes[word].length) {
+                    const space = document.createTextNode(', ');
+                    li.append(space);
+                }
+            })
+            html.append(li);
+        })
+    }
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    var player;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            videoId: getVideoId(),
+        });
+    }
+
+    function setCurrentTime(time) {
+        player.seekTo(time);
+    }
+
+    getTimeCodes();
+</script>

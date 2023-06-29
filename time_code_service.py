@@ -2,7 +2,6 @@ import collections
 import re
 import time
 
-import json
 import spacy
 from mysql.connector import connect
 from lemmagen3 import Lemmatizer
